@@ -1,25 +1,57 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react'
 
-function App() {
+/*
+const api = {
+  key: "487083d1af077993c1e617c08a37d55e",
+  base: "https://api.openweathermap.org/data/2.5/",
+}
+*/
+
+
+const App = () => {
+
+  const [search, setSearch] = useState("")
+  const [weather, setWeather] = useState({});
+
+  const searchPressed = () => {
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${search}&APPID=487083d1af077993c1e617c08a37d55e`)
+      .then((res) => res.json())
+      .then((result) => {
+        console.log(result)
+        setWeather(result)
+      });
+  };
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='app'>
+      <h1>Weather</h1>
+      <input type="text" placeholder="Enter location..." onChange={(e) => setSearch(e.target.value)} />
+      <button className='btn' onClick={searchPressed}>Search</button>
+
+
+
+
+      {typeof weather.main !== "undefined" ? (
+        <div className='background'>
+
+
+          <p className='city'>{weather.name}</p>
+
+
+          <p className='temperature'>{(weather.main.temp - 273.15).toFixed(0)}° C</p>
+          <div className='flex'>
+            <p className='condition'>{weather.weather[0].main}</p>
+            <p className='condition'>({weather.weather[0].description})</p>
+          </div>
+        </div>
+      ) : (
+        <p className="title">Enter a location to find the weather...</p>
+      )}
+
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
+
